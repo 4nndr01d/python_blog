@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.utils import timezone
 from .models import Post, Comment
+from django.core.serializers import serialize
 from django.shortcuts import render, get_object_or_404
 from .forms import PostForm, CommentForm
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-
+from django.http import JsonResponse
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
@@ -22,8 +23,6 @@ def post_new(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            print(request.POST.get('draft'))
-            print(request.POST.get('draft') != True)
             if not request.POST.get('draft'):
                 post.published_date = timezone.now()
             post.save()
@@ -67,9 +66,6 @@ def post_remove(request, pk):
 @login_required
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    print("=====================")
-    print(request.user)
-    print("=====================")
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -77,7 +73,11 @@ def add_comment_to_post(request, pk):
             comment.post = post
             comment.author = request.user
             comment.save()
-            return redirect('post_detail', pk=post.pk)
+            data = {'status': 'ok'}
+            return JsonResponse(data)
+        else:
+            data = {'status': 'error'}
+            return JsonResponse(data)   
     else:
         form = CommentForm()
     return render(request, 'blog/add_comment_to_post.html', {'form': form})
@@ -91,5 +91,9 @@ def comment_approve(request, pk):
 @login_required
 def comment_remove(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
-    comment.delete()
-    return redirect('post_detail', pk=comment.post.pk)
+    if comment.author == request.user.username:     
+        comment.delete()
+        return redirect('post_detail', pk=comment.post.pk)
+    else:
+        data = {'status': 'error', 'message': 'only the author can delete his comments'}
+        return JsonResponse(data)

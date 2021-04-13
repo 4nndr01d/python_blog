@@ -1,17 +1,43 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<h1 class="display-3">Posts:</h1>
 
-        {% for post in posts %}
-          <div>
-              <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+<div class="row">
+
+  <div class="jumbotron">
+    <h1>Add your post!</h1>
+    <p class="lead">Write some of your thoughts on any occasion</p>
+    <p><a class="btn btn-lg btn-success" href="/post/new/" role="button">Add post</a></p>
+  </div>
+
+  {% for post in posts %}
+  <div class="col-lg-4 post-preview">
+    <h2>{{ post.title }}</h2>
+    <p class="blog-post-meta">{{ post.published_date }} by <a href="#"><strong>{{ post.author }}</strong></a></p>
+    <p>{{ post.text|linebreaksbr|slice:":255" }}</p>
+    <div class='post-preview__footer' >
+      <a class="btn btn-primary" href="{% url 'post_detail' pk=post.pk %}" role="button">View details »</a>
+      <a class='post-preview__comment-count' href="{% url 'post_detail' pk=post.pk %}"><i class="glyphicon glyphicon-comment" ></i> {{ post.approved_comments.count }}</a>
+    </div>
+  </div>
+  
+{% endfor %}
+</div>
+<hr>
+        <!-- <div class="row " >
+          {% for post in posts %}
+          <div class="col-sm-4 post" >
+            <div class="post-card col-sm-12" >
+              <a href="{% url 'post_detail' pk=post.pk %}">
+              <h3 class="mb-0">{{ post.title }}</h3>
+              <span class="label label-default">{{ post.published_date }}</span>
               <p>{{ post.text|linebreaksbr }}</p>
-              <p>Published: <span class="label label-default">{{ post.published_date }}</span></p>
               <a href="{% url 'post_detail' pk=post.pk %}">Comments: {{ post.approved_comments.count }}</a>
+            </a>
+          </div>
           </div>
         {% endfor %}
-
-        <hr>
+        </div>
+        <hr> -->
 
       {% endblock %}

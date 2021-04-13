@@ -1,75 +1,30 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<div>
 
+<div class="blog-header">
+    <h1 class="blog-title">{{ post.title }}</h1>
+    {% if post.published_date %}
+        <p class="blog-post-meta">{{ post.published_date }} by <a href="#"><strong>{{ post.author }}</strong></a></p>
+    {% else %}
+        <a class="btn btn-success" href="{% url 'post_publish' pk=post.pk %}">Publish <i class="glyphicon glyphicon-send" ></i></a>
+    {% endif %}
+    {% if user.is_authenticated and post.author.username == user.username %}
+        <a class="btn btn-primary" href="{% url 'post_edit' pk=post.pk %}">edit <i class="glyphicon glyphicon-pencil" ></i></span></a>
+        <a class="btn btn-danger" href="{% url 'post_remove' pk=post.pk %}">remove<i class="glyphicon glyphicon-trash" ></i></a>
+    {% endif %}
 </div>
-    <div class="post" >
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.text|linebreaksbr }}</p>
-        {% if post.published_date %}
-            <p>Published: <span class="label label-default">{{ post.published_date }}</span></p>
-        {% else %}
-            <a class="btn btn-success" href="{% url 'post_publish' pk=post.pk %}">Publish <i class="glyphicon glyphicon-send" ></i></a>
-        {% endif %}
-        {% if user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'post_edit' pk=post.pk %}">edit <i class="glyphicon glyphicon-pencil" ></i></span></a>
-            <a class="btn btn-danger" href="{% url 'post_remove' pk=post.pk %}">remove<i class="glyphicon glyphicon-trash" ></i></a>
-        {% endif %}
-        <hr>
-        {% if user.is_authenticated %}
-            <div class="col-sm-12" >
-                <h1>New comment</h1>
-                <form method="POST" action='javascript:void(0)' class="post-form addComment">{% csrf_token %}
-                    <p style="display: flex;" ><label for="id_text">Text:</label>
-                    <textarea name="text" cols="40" rows="10" required class="col-sm-12" id="id_text"></textarea></p>
-                    <button type="submit" class="save btn btn-primary"><i class="glyphicon glyphicon-send" ></i></button>
-                </form>
-                <hr>
-                {% for comment in post.comments.all %}
-                {% if user.is_authenticated or comment.approved_comment %}
-                    <div class="comment">
-                        <div class="date">
-                            {{ comment.created_date }}
-                            {% if not comment.approved_comment %}
-                                <a class="btn btn-default" href="{% url 'comment_remove' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
-                                <a class="btn btn-default" href="{% url 'comment_approve' pk=comment.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
-                            {% endif %}
-                        </div>
-                        <strong>{{ comment.author }}</strong>
-                        <p>{{ comment.text|linebreaks }}</p>
-                    </div>
-                {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
 
-    {% load static %}
-    {% block scripts %}
-    <script type="text/javascript" src={% static "test.js" %}></script>
-    {% endblock %}
+<p>{{ post.text|linebreaksbr }}</p>
 
-    <script type="text/javascript">
-        $( document ).ready(function() {
-            $(".addComment").on('submit', function(){
-                const data = $(".post-form").serialize();
-                console.log(data)
-                // $.ajax({
-                //     type: "POST",
-                //     url: "/post/new/",
-                //     data: data,
-                //     cache: false,
-                //     dataType: "JSON"
-                // }).done(function(data) {
-                //     console.log('gi')
-                //     if (data.redirect) {
-                //         window.location.href = '/drafts/';
-                //     }
-                // });
-            })
-        });
-    </script>
+
+<ul class="pager">
+    <li><a href="#">Previous</a></li>
+    <li><a href="#">Next</a></li>
+  </ul>
+        
+  {% include  './components/post_comments.html' %}
+
 
         <!-- {% for comment in post.comments.all %} -->
     <!-- {% if user.is_authenticated or comment.approved_comment %}
@@ -88,9 +43,6 @@
     {% empty %}
         <p>No comments here yet :(</p>
     {% endfor %} -->
-
-        <!-- <a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a> -->
-
 
 {% endblock %}
 

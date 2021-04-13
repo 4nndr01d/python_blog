@@ -3,29 +3,29 @@
 {% block content %}
     <h1>New post</h1>
     <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
+        
+        <p><label for="id_title">Title:</label> <input type="text" name="title" maxlength="200" required="" id="id_title"></p>
+        <div class="input-group">
+            <label for="id_text">Text:</label> <textarea name="text" cols="40" rows="10" required="" id="id_text" style="resize: none;" ></textarea>
+        </div>
+        <!-- <form method="POST" action='javascript:void(0)' class="post-form addComment">
+            {% csrf_token %}
+            <div class="form-group">
+            <label for="comment">Your Comment</label>
+            <textarea name="text" class="form-control" rows="3"></textarea>
+            </div>
+            <button type="save submit" class="btn btn-primary">Send</button>
+        </form> -->
+
         <button type="submit" class="save btn btn-success">Save <i class="glyphicon glyphicon-floppy-disk" ></i> </button>
         <button type="button" class="saveAsDraft btn btn-primary">Save as draft <i class="glyphicon glyphicon-file" ></i> </button>
     </form>
 
-    <script type="text/javascript">
-        $( document ).ready(function() {
-            $(".saveAsDraft").on('click', function(){
-                const data = $(".post-form").serialize() + "&draft=True";
-                $.ajax({
-                    type: "POST",
-                    url: "/post/new/",
-                    data: data,
-                    cache: false,
-                    dataType: "JSON"
-                }).done(function(data) {
-                    console.log('gi')
-                    if (data.redirect) {
-                        window.location.href = '/drafts/';
-                    }
-                });
-            })
-        });
-    </script>
+    {% load static %} 
+
+    {% block extrahead %}
+        <script type="text/javascript" src="{% static '/js/post_edit.js' %}"></script>  
+    {% endblock extrahead %}
+
 
 {% endblock %}
