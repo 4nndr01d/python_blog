@@ -1,0 +1,54 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<div class="col-md-12" >
+    <div class="col-md-offset-3 col-md-6 " >
+        <form class="panel panel-default"  method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <div class="panel-heading">
+                <h3 class="panel-title">Sign up</h3>
+             </div>
+             <div class="panel-body">
+                <div class="form-group">
+                    <label for="username" class="sr-only">Username</label>
+                    <input type="text" name="username" id='id_username' class="form-control" placeholder="Username" required autofocus>
+                </div>
+
+                <div class="form-group">
+                  <label for="first_name" class="sr-only">First name</label>
+                  <input type="text" name="first_name" id='id_first_name' class="form-control" placeholder="First name" required autofocus>
+                </div>
+
+                <div class="form-group">
+                  <label for="last_name" class="sr-only">Last name</label>
+                  <input type="text" name="last_name" id='id_last_name' class="form-control" placeholder="Last name" required autofocus>
+                </div>
+
+                <div class="form-group">
+                  <label for="email" class="sr-only">Email</label>
+                  <input type="text" name="email" id='id_email' class="form-control" placeholder="Email" required autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="sr-only">Password</label>
+                    <input type="password" id="id_password1" name="password1" class="form-control" placeholder="Password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="sr-only">Repeat password</label>
+                    <input type="password" id="id_password2" name="password2" class="form-control" placeholder="Repeat password" required>
+                </div>
+                
+                {% if form.errors %}
+                    <br>
+                        <div class="alert alert-danger" role="alert">Wrong username or password.</div>
+                    <br>
+                {% endif %}
+                <button class="btn btn-success col-md-12" type="submit">Sign up</button> 
+            </div>
+          </form>
+    </div>
+   
+</div>
+
+{% endblock %}

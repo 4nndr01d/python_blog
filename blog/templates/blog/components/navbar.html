@@ -67,7 +67,8 @@
           {% if user.is_authenticated %}
               <li><a class="nav-link" href="{% url 'logout' %}" class="top-menu">Logout</a></li>
             {% else %}
-            <li><a href="{% url 'login' %}" class="top-menu">Sign in</a></li>
+              <li><a href="{% url 'login' %}" class="top-menu">Sign in</a></li>
+              <li><a href="{% url 'signup' %}" class="top-menu">Sign up</a></li>
           {% endif %}
         </ul>
       </div>
